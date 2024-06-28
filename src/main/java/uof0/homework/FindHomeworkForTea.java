@@ -4,11 +4,14 @@ import kd.bos.bill.BillShowParameter;
 import kd.bos.bill.OperationStatus;
 import kd.bos.context.RequestContext;
 import kd.bos.dataentity.entity.DynamicObject;
+import kd.bos.entity.datamodel.ListSelectedRow;
 import kd.bos.form.ShowType;
 import kd.bos.form.events.BeforeDoOperationEventArgs;
 import kd.bos.form.events.SetFilterEvent;
 import kd.bos.form.operate.FormOperate;
 import kd.bos.list.BillList;
+import kd.bos.list.ListShowParameter;
+import kd.bos.list.events.ListRowClickEvent;
 import kd.bos.list.plugin.AbstractListPlugin;
 import kd.bos.openapi.kcf.spi.OperationAction;
 import kd.bos.orm.query.QCP;
@@ -41,7 +44,7 @@ public class FindHomeworkForTea extends AbstractListPlugin implements Plugin {
         DynamicObject[] objects = BusinessDataServiceHelper.load("uof0_course_class", "number,uof0_teacher", new QFilter[]{
                 new QFilter("uof0_teacher.id", QCP.equals, RequestContext.get().getCurrUserId()),
                 new QFilter("status", QCP.equals, "C"),
-                new QFilter("enable", QCP.equals, "1")
+                new QFilter("enable", QCP.equals, '1')
         });
         List<Long> classIds=new ArrayList<>();
         if(getClassPK()==null){
@@ -81,5 +84,26 @@ public class FindHomeworkForTea extends AbstractListPlugin implements Plugin {
             newBill.getOpenStyle().setTargetKey("uof0__submaintab_");
             this.getView().showForm(newBill);
         }
+    }
+
+    @Override
+    public void listRowClick(ListRowClickEvent evt) {
+        super.listRowClick(evt);
+        int row = evt.getRow();
+        if(row<0) return;
+        ListSelectedRow listSelectedRow = this.getCurrentListAllRowCollection().get(row);
+        Object value = listSelectedRow.getPrimaryKeyValue();
+        DynamicObject dynamicObject = BusinessDataServiceHelper.loadSingle(value, "uof0_tea_homework");
+        String billno = dynamicObject.getString("billno");
+
+        ListShowParameter listShowParameter=new ListShowParameter();
+        listShowParameter.setCaption(dynamicObject.getString("uof0_textfield"));
+        listShowParameter.setFormId("bos_list");
+        listShowParameter.setBillFormId("uof0_stuhw_view_for_tea");
+        listShowParameter.getOpenStyle().setShowType(ShowType.Modal);
+        listShowParameter.setCustomParam("homeworkNO",billno);
+        this.clearSelection();
+        this.getView().showForm(listShowParameter);
+
     }
 }

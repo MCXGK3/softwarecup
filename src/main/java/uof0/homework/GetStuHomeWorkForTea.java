@@ -37,15 +37,16 @@ public class GetStuHomeWorkForTea extends AbstractListPlugin implements Plugin {
     public void afterDoOperation(AfterDoOperationEventArgs afterDoOperationEventArgs) {
         super.afterDoOperation(afterDoOperationEventArgs);
         FormOperate source = (FormOperate) afterDoOperationEventArgs.getSource();
-        source.getOption();
-        String studentHomeworkNO = source.getOption().getVariableValue("studentHomeworkNO");
-        DynamicObject dynamicObject = BusinessDataServiceHelper.loadSingle("uof0_st_homework", new QFilter[]{
-                new QFilter("billno", QCP.equals, studentHomeworkNO)
-        });
-        FormShowParameter check=new FormShowParameter();
-        check.setFormId("uof0_tea_check_homework");
-        check.getOpenStyle().setShowType(ShowType.Modal);
-        check.setCustomParam("studentHomeworkPK",dynamicObject==null?null:dynamicObject.getPkValue());
-        this.getView().showForm(check);
+        if(source.getOperateKey().equals("check")) {
+            String studentHomeworkNO = source.getOption().getVariableValue("studentHomeworkNO");
+            DynamicObject dynamicObject = BusinessDataServiceHelper.loadSingle("uof0_st_homework", new QFilter[]{
+                    new QFilter("billno", QCP.equals, studentHomeworkNO)
+            });
+            FormShowParameter check = new FormShowParameter();
+            check.setFormId("uof0_tea_check_homework");
+            check.getOpenStyle().setShowType(ShowType.Modal);
+            check.setCustomParam("studentHomeworkPK", dynamicObject == null ? null : dynamicObject.getPkValue());
+            this.getView().showForm(check);
+        }
     }
 }
