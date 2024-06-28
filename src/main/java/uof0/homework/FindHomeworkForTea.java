@@ -1,0 +1,85 @@
+package uof0.homework;
+
+import kd.bos.bill.BillShowParameter;
+import kd.bos.bill.OperationStatus;
+import kd.bos.context.RequestContext;
+import kd.bos.dataentity.entity.DynamicObject;
+import kd.bos.form.ShowType;
+import kd.bos.form.events.BeforeDoOperationEventArgs;
+import kd.bos.form.events.SetFilterEvent;
+import kd.bos.form.operate.FormOperate;
+import kd.bos.list.BillList;
+import kd.bos.list.plugin.AbstractListPlugin;
+import kd.bos.openapi.kcf.spi.OperationAction;
+import kd.bos.orm.query.QCP;
+import kd.bos.orm.query.QFilter;
+import kd.bos.servicehelper.BusinessDataServiceHelper;
+import kd.sdk.plugin.Plugin;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 标准单据列表插件
+ */
+public class FindHomeworkForTea extends AbstractListPlugin implements Plugin {
+    private Object getClassPK(){
+        return this.getView().getFormShowParameter().getCustomParam("classPK");
+    }
+    private boolean isExam(){
+        if(!this.getView().getFormShowParameter().getCustomParams().containsKey("exam")) return false;
+        if(this.getView().getFormShowParameter().getCustomParam("exam") instanceof String){
+            String exam=this.getView().getFormShowParameter().getCustomParam("exam");
+            if(exam.equals("true")) return true;
+            else return  false;
+        }
+        return (boolean) this.getView().getFormShowParameter().getCustomParam("exam");
+    }
+    @Override
+    public void setFilter(SetFilterEvent e) {
+        List<QFilter> filters = e.getQFilters();
+        DynamicObject[] objects = BusinessDataServiceHelper.load("uof0_course_class", "number,uof0_teacher", new QFilter[]{
+                new QFilter("uof0_teacher.id", QCP.equals, RequestContext.get().getCurrUserId()),
+                new QFilter("status", QCP.equals, "C"),
+                new QFilter("enable", QCP.equals, "1")
+        });
+        List<Long> classIds=new ArrayList<>();
+        if(getClassPK()==null){
+            for(DynamicObject object:objects){
+                classIds.add((Long) object.getPkValue());
+            }
+            filters.add(new QFilter("uof0_basedatafield.id",QCP.in,classIds));
+        }
+        else {
+            filters.add(new QFilter("uof0_basedatafield.id", QCP.equals, getClassPK()));
+        }
+        filters.add(new QFilter("uof0_checkboxfield1",QCP.equals,isExam()));
+        super.setFilter(e);
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
+        BillList billList=this.getControl("billlistap");
+        billList.getView().setVisible(isExam(),"uof0_datetimefield1");
+        billList.getView().updateView("uof0_datetimefield1");
+    }
+
+    @Override
+    public void beforeDoOperation(BeforeDoOperationEventArgs args) {
+        super.beforeDoOperation(args);
+        FormOperate formOperate= (FormOperate) args.getSource();
+        String key = formOperate.getOperateKey();
+        if(key.equals("new")){
+            args.setCancel(true);
+            BillShowParameter newBill=new BillShowParameter();
+            newBill.setStatus(OperationStatus.ADDNEW);
+            newBill.setCustomParam("classPK",getClassPK());
+            newBill.setFormId("uof0_tea_homework");
+            newBill.setCaption("新增作业");
+            newBill.getOpenStyle().setShowType(ShowType.Modal);
+            newBill.getOpenStyle().setTargetKey("uof0__submaintab_");
+            this.getView().showForm(newBill);
+        }
+    }
+}
