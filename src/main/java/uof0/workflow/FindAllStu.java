@@ -37,7 +37,10 @@ public class FindAllStu implements Plugin, IWorkflowPlugin {
         DynamicObjectCollection students = clas.getDynamicObjectCollection("uof0_joinstudents");
         List<Long> ids=new ArrayList<>();
         for(DynamicObject student:students){
-            ids.add(student.getDynamicObject("fbasedataid").getLong("id"));
+            Long id=student.getDynamicObject("fbasedataid").getLong("id");
+            DynamicObject stu=BusinessDataServiceHelper.loadSingle(id,"uof0_studentinfo");
+            DynamicObject userfield = stu.getDynamicObject("uof0_userfield");
+            ids.add((Long)userfield.getPkValue());
         }
         String name = execution.getEventName();
         return ids;

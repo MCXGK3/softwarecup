@@ -125,6 +125,17 @@ public class ClassHomePage extends AbstractFormPlugin implements Plugin {
 
 
     }
+    private void openDiscuss(){
+        FormShowParameter discuss=new FormShowParameter();
+        discuss.getOpenStyle().setShowType(ShowType.NewTabPage);
+        discuss.getOpenStyle().setTargetKey("uof0__submaintab_");
+        discuss.setFormId("uof0_commentplug");
+        discuss.setCustomParam("classPK",getClassPK());
+        discuss.setCaption("课堂评论");
+        this.getView().showForm(discuss);
+        this.getView().updateView("uof0__submaintab_");
+        this.getPageCache().put("discussPage",discuss.getPageId());
+    }
 
     private  void openStuList(){
         ListShowParameter stulist=new ListShowParameter();
@@ -212,8 +223,7 @@ public class ClassHomePage extends AbstractFormPlugin implements Plugin {
                 openDataPage();
                 break;
             case "discuss":
-                //todo 讨论组处理
-                openHomeworkPage(false);
+                openDiscuss();
                 break;
             case "schedule":
                 openSchedule();
@@ -222,7 +232,6 @@ public class ClassHomePage extends AbstractFormPlugin implements Plugin {
                 openStuList();;
                 break;
             case "signin":
-                //todo 签到处理
                 openSignin();
                 break;
             case "signinlist":
