@@ -5,6 +5,8 @@ import kd.bos.bill.OperationStatus;
 import kd.bos.context.RequestContext;
 import kd.bos.dataentity.entity.DynamicObject;
 import kd.bos.entity.datamodel.ListSelectedRow;
+import kd.bos.entity.datamodel.events.PackageDataEvent;
+import kd.bos.entity.list.column.DynamicTextColumnDesc;
 import kd.bos.form.ShowType;
 import kd.bos.form.events.BeforeDoOperationEventArgs;
 import kd.bos.form.events.SetFilterEvent;
@@ -66,6 +68,7 @@ public class FindHomeworkForTea extends AbstractListPlugin implements Plugin {
         BillList billList=this.getControl("billlistap");
         billList.getView().setVisible(isExam(),"uof0_datetimefield1");
         billList.getView().updateView("uof0_datetimefield1");
+        billList.addPackageDataListener(this::packageData);
     }
 
     @Override
@@ -84,6 +87,27 @@ public class FindHomeworkForTea extends AbstractListPlugin implements Plugin {
             newBill.getOpenStyle().setTargetKey("uof0__submaintab_");
             this.getView().showForm(newBill);
         }
+    }
+
+    @Override
+    public void packageData(PackageDataEvent e) {
+        super.packageData(e);
+        if(e.getSource() instanceof DynamicTextColumnDesc){
+            String key = ((DynamicTextColumnDesc) e.getSource()).getKey();
+            if(key.equals("uof0_dynamictextlistcolum")){
+                int anInt = e.getRowData().getDynamicObject("uof0_basedatafield").getInt("uof0_selectednum");
+                e.setFormatValue(anInt);
+            } else if (key.equals("uof0_dynamictextlistcolu1")) {
+                String billno = e.getRowData().getString("billno");
+                DynamicObject[] objects = BusinessDataServiceHelper.load("uof0_st_homework", "billno", new QFilter[]{
+                        new QFilter("uof0_textfield", QCP.equals, billno),
+                        new QFilter("billstatus",QCP.equals,"A")
+                });
+                e.setFormatValue(objects.length);
+                
+            }
+        }
+
     }
 
     @Override
