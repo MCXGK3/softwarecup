@@ -155,6 +155,7 @@ public class TeaCheckHomework extends AbstractFormPlugin implements Plugin {
             map.put("image",problems.get(i).get("uof0_picturefield"));
             map.put("score",problems.get(i).get("uof0_integerfield"));
             map.put("answer",answers.get(i));
+            map.put("standardAnswer",problems.get(i).getString("uof0_textfield2"));
             map.put("check",true);
             map.put("review",false);
             map.put("stuentity",studentEntity.getPkValue());

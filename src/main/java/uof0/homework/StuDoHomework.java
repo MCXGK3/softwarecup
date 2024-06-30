@@ -226,6 +226,7 @@ public class StuDoHomework extends AbstractFormPlugin implements Plugin {
             map.put("image",problems.get(i).get("uof0_picturefield"));
             map.put("score",problems.get(i).get("uof0_integerfield"));
             map.put("answer",answers.get(i));
+            map.put("standardAnswer",problems.get(i).getString("uof0_textfield2"));
             map.put("stuentity",studententity.getPkValue());
             map.put("check",this.getView().getFormShowParameter().getCustomParam("check"));
             map.put("review",this.getView().getFormShowParameter().getCustomParam("review"));

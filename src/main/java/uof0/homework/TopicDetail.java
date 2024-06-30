@@ -56,6 +56,7 @@ public class TopicDetail extends AbstractFormPlugin implements Plugin {
         Label topic=(Label) this.getControl("uof0_labelap");
         Image image=this.getControl("uof0_imageap");
         RichTextEditor richTextEditor=this.getControl("uof0_richtexteditorap");
+        RichTextEditor standardAnswer=this.getControl("uof0_richtexteditorap1");
         if(map!=null){
             String top="";
             if(map.containsKey("topic")){
@@ -72,6 +73,7 @@ public class TopicDetail extends AbstractFormPlugin implements Plugin {
             }
             topic.setText(top);
             richTextEditor.setText((String) map.getOrDefault("answer",""));
+            standardAnswer.setText((String) map.getOrDefault("standardAnswer",""));
             if((boolean) map.get("check")){
                 this.getView().setEnable(false,"uof0_richtexteditorap");
             }
@@ -82,10 +84,12 @@ public class TopicDetail extends AbstractFormPlugin implements Plugin {
 
 
             if(!(boolean) map.get("check")){
-                this.getView().setVisible(false,"uof0_textfield");
-                this.getView().setVisible(false,"uof0_integerfield");
-                this.getView().updateView("uof0_textfield");
-                this.getView().updateView("uof0_integerfield");
+                this.getView().setVisible(false,"uof0_flexpanelap3");
+                this.getView().setVisible(false,"uof0_flexpanelap31");
+                this.getView().setVisible(false,"uof0_flexpanelap5");
+                this.getView().updateView("uof0_flexpanelap3");
+                this.getView().updateView("uof0_flexpanelap31");
+                this.getView().updateView("uof0_flexpanelap5");
             }
             else{
                 DynamicObject dynamicObject = BusinessDataServiceHelper.loadSingle(map.get("stuentity"), "uof0_st_homework");
@@ -100,7 +104,12 @@ public class TopicDetail extends AbstractFormPlugin implements Plugin {
                 this.getView().updateView("uof0_integerfield");
                 this.getView().updateView("uof0_textfield");
             }
+            if(!((boolean) map.get("check")&&(!(boolean) map.get("review")))){
+                this.getView().setVisible(false,"uof0_gen_comment");
+                this.getView().updateView("uof0_gen_comment");
+            }
         }
+
 
     }
 }

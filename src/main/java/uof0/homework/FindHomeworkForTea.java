@@ -101,7 +101,7 @@ public class FindHomeworkForTea extends AbstractListPlugin implements Plugin {
                 String billno = e.getRowData().getString("billno");
                 DynamicObject[] objects = BusinessDataServiceHelper.load("uof0_st_homework", "billno", new QFilter[]{
                         new QFilter("uof0_textfield", QCP.equals, billno),
-                        new QFilter("billstatus",QCP.equals,"A")
+                        new QFilter("billstatus",QCP.not_equals,"A")
                 });
                 e.setFormatValue(objects.length);
                 

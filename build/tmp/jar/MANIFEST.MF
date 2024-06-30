@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Jar-Id: 
 Project-Name: uof0-cosmic-debug
 Build-Tool: Gradle 7.6.3
-Build-Date: 2024-06-28 22:17:53
+Build-Date: 2024-06-29 21:59:01
 Built-By: Kingdee Cosmic Developer Tools
-Build-Num: 20240628221753174
+Build-Num: 20240629215901694
 App-Name: 
 Git-Branch: 
 Cloud-Name: 

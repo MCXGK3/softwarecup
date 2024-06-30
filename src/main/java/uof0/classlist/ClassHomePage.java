@@ -60,6 +60,7 @@ public class ClassHomePage extends AbstractFormPlugin implements Plugin {
         else homework.setBillFormId("uof0_hw_view_for_stu");
         homework.setCustomParam("classPK", getClassPK());
         homework.setCustomParam("exam",exam);
+        homework.setCustomParam("isTeacher",isteacher());
         homework.setCaption("作业列表");
         if(exam) homework.setCaption("考试列表");
 
@@ -131,6 +132,7 @@ public class ClassHomePage extends AbstractFormPlugin implements Plugin {
         discuss.getOpenStyle().setTargetKey("uof0__submaintab_");
         discuss.setFormId("uof0_commentplug");
         discuss.setCustomParam("classPK",getClassPK());
+        discuss.setCustomParam("isTeacher",isteacher());
         discuss.setCaption("课堂评论");
         this.getView().showForm(discuss);
         this.getView().updateView("uof0__submaintab_");
@@ -144,6 +146,7 @@ public class ClassHomePage extends AbstractFormPlugin implements Plugin {
         stulist.setFormId("bos_list");
         stulist.setBillFormId("uof0_class_stulist");
         stulist.setCustomParam("classPK", getClassPK());
+        stulist.setCustomParam("isTeacher",isteacher());
         stulist.setCaption("学生列表");
         this.getView().showForm(stulist);
         this.getView().updateView("uof0__submaintab_");
@@ -156,6 +159,7 @@ public class ClassHomePage extends AbstractFormPlugin implements Plugin {
         signinlist.setFormId("bos_list");
         signinlist.setBillFormId("uof0_newsignin");
         signinlist.setCustomParam("classPK", getClassPK());
+        signinlist.setCustomParam("isTeacher",isteacher());
         signinlist.setCaption("签到列表");
         this.getView().showForm(signinlist);
         this.getView().updateView("uof0__submaintab_");
@@ -168,11 +172,14 @@ public class ClassHomePage extends AbstractFormPlugin implements Plugin {
         annlist.setFormId("bos_list");
         annlist.setBillFormId("uof0_class_announcement");
         annlist.setCustomParam("classPK", getClassPK());
+        annlist.setCustomParam("isTeacher",isteacher());
         annlist.setCaption("公告列表");
         this.getView().showForm(annlist);
         this.getView().updateView("uof0__submaintab_");
         this.getPageCache().put("announcePage",annlist.getPageId());
     }
+
+
     private void prepareText(){
         Label name=this.getControl("uof0_labelap");
         Label teacher=this.getControl("uof0_labelap1");
@@ -190,6 +197,7 @@ public class ClassHomePage extends AbstractFormPlugin implements Plugin {
         ann.getOpenStyle().setShowType(ShowType.InContainer);
         ann.getOpenStyle().setTargetKey("uof0_gridcontainerap");
         ann.setCustomParam("classPK",this.getView().getFormShowParameter().getCustomParam("classPK"));
+        ann.setCustomParam("isTeacher",isteacher());
         Map<String,String> map = new HashMap<>();
         map.put("cardId","ltzVUk7uonvYargZTN");
         ann.getOpenStyle().setCustParam(map);
@@ -239,6 +247,9 @@ public class ClassHomePage extends AbstractFormPlugin implements Plugin {
                 break;
             case "announcement":
                 openAnnouncement();
+                break;
+            case "scores":
+//                openScores();
                 break;
             default:
                 break;
