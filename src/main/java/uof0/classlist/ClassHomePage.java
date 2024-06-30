@@ -112,6 +112,20 @@ public class ClassHomePage extends AbstractFormPlugin implements Plugin {
         this.getView().updateView("uof0__submaintab_");
         this.getPageCache().put("signinPage",signin.getPageId());
     }
+    private void openScoresUpload(){
+        BillShowParameter scoresUpload=new BillShowParameter();
+        scoresUpload.getOpenStyle().setShowType(ShowType.NewTabPage);
+        scoresUpload.getOpenStyle().setTargetKey("uof0__submaintab_");
+        scoresUpload.setFormId("uof0_scoreupload");
+        DynamicObject classEntity=getClassEntity();
+        scoresUpload.setCustomParam("isTeacher",isteacher());
+        scoresUpload.setCustomParam("classPK",getClassPK());
+        scoresUpload.setCaption("上传成绩");
+        scoresUpload.setStatus(OperationStatus.ADDNEW);
+        this.getView().showForm(scoresUpload);
+        this.getView().updateView("uof0__submaintab_");
+        this.getPageCache().put("scoresUpload",scoresUpload.getPageId());
+    }
     private void openSchedule(){
         FormShowParameter schedule=new FormShowParameter();
         schedule.getOpenStyle().setShowType(ShowType.NewTabPage);
@@ -164,6 +178,19 @@ public class ClassHomePage extends AbstractFormPlugin implements Plugin {
         this.getView().showForm(signinlist);
         this.getView().updateView("uof0__submaintab_");
         this.getPageCache().put("signinlistPage",signinlist.getPageId());
+    }
+    private void openGetScores(){
+        ListShowParameter scoreslist=new ListShowParameter();
+        scoreslist.getOpenStyle().setShowType(ShowType.NewTabPage);
+        scoreslist.getOpenStyle().setTargetKey("uof0__submaintab_");
+        scoreslist.setFormId("bos_list");
+        scoreslist.setBillFormId("uof0_examscore");
+        scoreslist.setCustomParam("classPK", getClassPK());
+        scoreslist.setCustomParam("isTeacher",isteacher());
+        scoreslist.setCaption("成绩列表");
+        this.getView().showForm(scoreslist);
+        this.getView().updateView("uof0__submaintab_");
+        this.getPageCache().put("scoreslistPage",scoreslist.getPageId());
     }
     private  void openAnnouncement(){
         ListShowParameter annlist=new ListShowParameter();
@@ -248,8 +275,11 @@ public class ClassHomePage extends AbstractFormPlugin implements Plugin {
             case "announcement":
                 openAnnouncement();
                 break;
-            case "scores":
-//                openScores();
+            case "scoresupload":
+                openScoresUpload();
+                break;
+            case "getscores":
+                openGetScores();
                 break;
             default:
                 break;
